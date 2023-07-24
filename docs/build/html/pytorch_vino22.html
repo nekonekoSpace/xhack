@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="ja" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>openvino21.2.185を用いてdocker上でkerasモデルを推定 &mdash; jaxaHackathon None ドキュメント</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/translations.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="prev" title="openvino21.2.185を用いてdocker上でkerasモデルを推定" href="keras_vino21.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            jaxaHackathon
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">はじめに</a></li>
+<li class="toctree-l1"><a class="reference internal" href="making_model.html">モデル作成</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="inference.html">VPUを使った推定</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="inference.html#vpu2">VPUを用いた2種類の推論方法</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="keras_vino21.html">openvino21.2.185を用いてdocker上でkerasモデルを推定</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">openvino21.2.185を用いてdocker上でkerasモデルを推定</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#construct-environment-workstation">Construct Environment (Workstation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#run-of-sample-code">Run of Sample Code</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">jaxaHackathon</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="inference.html">VPUを使った推定</a></li>
+      <li class="breadcrumb-item active">openvino21.2.185を用いてdocker上でkerasモデルを推定</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pytorch_vino22.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="openvino21-2-185dockerkeras">
+<h1>openvino21.2.185を用いてdocker上でkerasモデルを推定<a class="headerlink" href="#openvino21-2-185dockerkeras" title="この見出しへのパーマリンク"></a></h1>
+<p>先ほど作った環境上で自身が作ったプログラムをCPU・VPUで実行する。</p>
+<section id="construct-environment-workstation">
+<h2>Construct Environment (Workstation)<a class="headerlink" href="#construct-environment-workstation" title="この見出しへのパーマリンク"></a></h2>
+<section id="environment">
+<h3>Environment<a class="headerlink" href="#environment" title="この見出しへのパーマリンク"></a></h3>
+<ul class="simple">
+<li><p>Ubuntu 18.04</p></li>
+<li><p>OpenVino 2022.3.1</p></li>
+<li><p>NCS2 (VPU)</p></li>
+</ul>
+</section>
+<section id="install-openvino">
+<h3>Install OpenVino<a class="headerlink" href="#install-openvino" title="この見出しへのパーマリンク"></a></h3>
+<section id="runtime">
+<h4>Runtime<a class="headerlink" href="#runtime" title="この見出しへのパーマリンク"></a></h4>
+<p>Runtimeのダウンロード。OpenVinoを動かす際のCoreなシステムである。また、NSC2を認識させるためのファイル等も含まれている。</p>
+<p><a class="reference external" href="https://www.intel.com/content/www/us/en/developer/tools/openvino-toolkit/download.html">OpenVino</a></p>
+<p>LTSのため、2022.3.1を使用。</p>
+<p><b>※因みに非常に重要だが、本家のTutorialではなくて、ここからダウンロードしないとNCS2のデバイスファイルがない。</b></p>
+<p><img alt="image.png" src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/95636/177db560-5c37-21fb-f9bf-60034591d51c.png" /></p>
+<p><code class="docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Archives</span></code>を押すと次の画面が開く。</p>
+<p><img alt="image.png" src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/95636/381152f2-7ff9-0cdb-affd-deebac690399.png" /></p>
+<p>この内、Ubuntuで利用するため、<code class="docutils literal notranslate"><span class="pre">l_openvino_toolkit_ubuntu18_2022.3.1.9227.cf2c7da5689_x86_64.tgz</span></code>をダウンロード</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~
+$<span class="w"> </span>wget<span class="w"> </span>l_openvino_toolkit_ubuntu18_2022.3.1.9227.cf2c7da5689_x86_64.tgz
+$<span class="w"> </span>tar<span class="w"> </span>xf<span class="w"> </span>l_openvino_toolkit_ubuntu18_2022.3.1.9227.cf2c7da5689_x86_64.tgz
+</pre></div>
+</div>
+<p>解凍が終わったら設置</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/opt/intel
+$<span class="w"> </span>sudo<span class="w"> </span>mv<span class="w"> </span>l_openvino_toolkit_ubuntu18_2022.3.1.9227.cf2c7da5689_x86_64<span class="w"> </span>/opt/intel/openvino_2022.3.0
+</pre></div>
+</div>
+<p>次に依存関係のダウンロード</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>/opt/intel/openvino_2022.3.0
+$<span class="w"> </span>sudo<span class="w"> </span>-E<span class="w"> </span>./install_dependencies/install_openvino_dependencies.sh
+</pre></div>
+</div>
+<p>最後にアクセスしやすいようにリンク</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/opt/intel
+sudo<span class="w"> </span>ln<span class="w"> </span>-s<span class="w"> </span>openvino_2022.3.0<span class="w"> </span>openvino_2022
+</pre></div>
+</div>
+<p>起動時に設定ファイルが読み込まれるように追記して、再読み込み</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="sb">`</span><span class="nb">source</span><span class="w"> </span>/opt/intel/openvino_2022/setupvars.sh<span class="sb">`</span><span class="w"> </span>&gt;<span class="w"> </span>~/.bashrc
+$<span class="w"> </span><span class="nb">source</span><span class="w"> </span>~/.bashrc
+</pre></div>
+</div>
+<p>次のように表示されれば成功</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">setupvars</span><span class="o">.</span><span class="n">sh</span><span class="p">]</span> <span class="n">OpenVINO</span> <span class="n">environment</span> <span class="n">initialized</span>
+</pre></div>
+</div>
+</section>
+<section id="development-tool">
+<h4>Development tool<a class="headerlink" href="#development-tool" title="この見出しへのパーマリンク"></a></h4>
+<p>次のような記述でTrochやTensorflowをインストール可能</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>openvino-dev<span class="o">[</span>caffe,kaldi,mxnet,pytorch,onnx,tensorflow2<span class="o">]==</span><span class="m">2022</span>.3.0
+</pre></div>
+</div>
+</section>
+</section>
+<section id="install-ncs2">
+<h3>Install NCS2<a class="headerlink" href="#install-ncs2" title="この見出しへのパーマリンク"></a></h3>
+<p>設定ファイルをコピー</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>sudo<span class="w"> </span>usermod<span class="w"> </span>-a<span class="w"> </span>-G<span class="w"> </span>users<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>whoami<span class="k">)</span><span class="s2">&quot;</span>
+$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>/opt/intel/openvino_2022/install_dependencies/
+$<span class="w"> </span>sudo<span class="w"> </span>cp<span class="w"> </span><span class="m">97</span>-myriad-usbboot.rules<span class="w"> </span>/etc/udev/rules.d/
+</pre></div>
+</div>
+<p>最後に設定ファイルを<code class="docutils literal notranslate"><span class="pre">udevadm</span></code>に読み込ませてOpenVinoから認識できるようにする。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>sudo<span class="w"> </span>udevadm<span class="w"> </span>control<span class="w"> </span>--reload-rules
+$<span class="w"> </span>sudo<span class="w"> </span>udevadm<span class="w"> </span>trigger
+$<span class="w"> </span>sudo<span class="w"> </span>ldconfig
+</pre></div>
+</div>
+</section>
+<section id="install-gpu">
+<h3>Install GPU<a class="headerlink" href="#install-gpu" title="この見出しへのパーマリンク"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>/opt/intel/openvino_2022/install_dependencies/
+$<span class="w"> </span>sudo<span class="w"> </span>-E<span class="w"> </span>./install_NEO_OCL_driver.sh
+</pre></div>
+</div>
+</section>
+</section>
+<section id="run-of-sample-code">
+<h2>Run of Sample Code<a class="headerlink" href="#run-of-sample-code" title="この見出しへのパーマリンク"></a></h2>
+<section id="id1">
+<h3>ハードウェアテスト<a class="headerlink" href="#id1" title="この見出しへのパーマリンク"></a></h3>
+<p>以下のPythonコードを実行する</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">openvino.runtime</span> <span class="kn">import</span> <span class="n">Core</span>
+<span class="n">ie</span> <span class="o">=</span> <span class="n">Core</span><span class="p">()</span>
+<span class="n">devices</span> <span class="o">=</span> <span class="n">ie</span><span class="o">.</span><span class="n">available_devices</span>
+
+<span class="k">for</span> <span class="n">device</span> <span class="ow">in</span> <span class="n">devices</span><span class="p">:</span>
+    <span class="n">device_name</span> <span class="o">=</span> <span class="n">ie</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="s2">&quot;FULL_DEVICE_NAME&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">device</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">device_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>次のように認識されていればOK</p>
+<p><img alt="image.png" src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/95636/74e1fd5d-d0a9-b733-4204-787a98a6262e.png" /></p>
+</section>
+<section id="id2">
+<h3>サンプルコードを動かす<a class="headerlink" href="#id2" title="この見出しへのパーマリンク"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>/opt/intel/openvino_2022/samples/python/classification_sample_async
+</pre></div>
+</div>
+<p>まずはRequirementsのインストール</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</pre></div>
+</div>
+<p>設定ファイルのダウンロード</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>omz_downloader<span class="w"> </span>--name<span class="w"> </span>alexnet
+$<span class="w"> </span>omz_converter<span class="w"> </span>--name<span class="w"> </span>alexnet
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">-d</span> <span class="pre">MYRIAD</span></code>または<code class="docutils literal notranslate"><span class="pre">-d</span> <span class="pre">CPU</span></code>でNCS2とCPUを切り替えることができる。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>python<span class="w"> </span>classification_sample_async.py<span class="w"> </span>-m<span class="w"> </span>public/alexnet/FP16/alexnet.xml<span class="w"> </span>-i<span class="w"> </span>test.jpg<span class="w"> </span>-d<span class="w"> </span>MYRIAD
+</pre></div>
+</div>
+<p>次のように動作したらOK
+<img alt="image.png" src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/95636/bae34b1c-abda-74fe-934c-7cdae1761e2c.png" /></p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="keras_vino21.html" class="btn btn-neutral float-left" title="openvino21.2.185を用いてdocker上でkerasモデルを推定" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Shintaro Hashimoto.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

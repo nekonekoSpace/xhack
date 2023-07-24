@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="ja" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ローカル環境におけるyoloV7のモデル構築 &mdash; jaxaHackathon None ドキュメント</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/translations.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="next" title="VPUを使った推定" href="inference.html" />
+    <link rel="prev" title="Docker環境におけるkerasを用いたモデル構築" href="keras_model.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            jaxaHackathon
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">はじめに</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="making_model.html">モデル作成</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="making_model.html#id2">2種類の構築方法</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="keras_model.html">Docker環境におけるkerasを用いたモデル構築</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ローカル環境におけるyoloV7のモデル構築</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#install-torch">Install Torch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#install-yolov7">Install YOLOv7</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#training-on-yolov7">Training on YOLOv7</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#testing-on-yolov7">Testing on YOLOv7</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="inference.html">VPUを使った推定</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">jaxaHackathon</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="making_model.html">モデル作成</a></li>
+      <li class="breadcrumb-item active">ローカル環境におけるyoloV7のモデル構築</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pytorch_model.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="yolov7">
+<h1>ローカル環境におけるyoloV7のモデル構築<a class="headerlink" href="#yolov7" title="この見出しへのパーマリンク"></a></h1>
+<p>YOLO v7-tinyをNCS2で動作させたい。ただし、YOLO v7のKeras版がないので、Torch版で進めていく。
+最終的にProtoBufferやONNXに変換できればMOでIR形式に変換できるのでOK。</p>
+<p>以下を使っていく。
+https://github.com/WongKinYiu/yolov7</p>
+<section id="install-torch">
+<h2>Install Torch<a class="headerlink" href="#install-torch" title="この見出しへのパーマリンク"></a></h2>
+<p>TORCHは1.12.0じゃないとエラーがでる。Cudaは11.3がよい。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="nv">torch</span><span class="o">==</span><span class="m">1</span>.12.0+cu113<span class="w"> </span><span class="nv">torchvision</span><span class="o">==</span><span class="m">0</span>.13.0+cu113<span class="w"> </span><span class="nv">torchaudio</span><span class="o">==</span><span class="m">0</span>.12.0<span class="w"> </span>--extra-index-url<span class="w"> </span>https://download.pytorch.org/whl/cu113
+</pre></div>
+</div>
+</section>
+<section id="install-yolov7">
+<h2>Install YOLOv7<a class="headerlink" href="#install-yolov7" title="この見出しへのパーマリンク"></a></h2>
+<p>YOLOをGitからダウンロードして、依存環境をインストール</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/WongKinYiu/yolov7
+$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>YOLOv7
+$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</pre></div>
+</div>
+</section>
+<section id="training-on-yolov7">
+<h2>Training on YOLOv7<a class="headerlink" href="#training-on-yolov7" title="この見出しへのパーマリンク"></a></h2>
+<p>後は良しなにyoolov7-tinyのモデル構造を変更するのと伴にデータセットを作って、学習。
+（余力あれば追記）</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>python<span class="w"> </span>train.py<span class="w"> </span>--workers<span class="w"> </span><span class="m">8</span><span class="w"> </span>--device<span class="w"> </span><span class="m">0</span><span class="w"> </span>--batch-size<span class="w"> </span><span class="m">8</span><span class="w"> </span>--data<span class="w"> </span>data/ship.yaml<span class="w"> </span>--img<span class="w"> </span><span class="m">800</span><span class="w"> </span><span class="m">800</span><span class="w"> </span>--cfg<span class="w"> </span>cfg/training/yolov7-tiny.yaml<span class="w"> </span>--weights<span class="w"> </span><span class="s1">&#39;&#39;</span><span class="w"> </span>--name<span class="w"> </span>yolov7_ship<span class="w"> </span>--hyp<span class="w"> </span>data/hyp.scratch.p5.yaml
+</pre></div>
+</div>
+<p>こんな感じになればOK。画像サイズは32の倍数でないといけない。</p>
+<p><img alt="image.png" src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/95636/394a8b4d-31f9-ccc4-1c4b-fd239ef557b1.png" /></p>
+<p>学習できていれば停止
+<img alt="image.png" src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/95636/55d60a44-a979-cebe-65cf-14e27a8d6f22.png" /></p>
+</section>
+<section id="testing-on-yolov7">
+<h2>Testing on YOLOv7<a class="headerlink" href="#testing-on-yolov7" title="この見出しへのパーマリンク"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>python<span class="w"> </span>detect.py<span class="w"> </span>--weights<span class="w"> </span>runs/train/yolov7_ship/weights/best.pt<span class="w"> </span>--conf<span class="w"> </span><span class="m">0</span>.8<span class="w"> </span>--img-size<span class="w"> </span><span class="m">800</span><span class="w"> </span>--source<span class="w"> </span>custom_dataset/images/val/img_99-0.png
+</pre></div>
+</div>
+<p>次のようなログが流れて始めれば成功</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Namespace(weights=[&#39;runs/train/yolov7_ship/weights/best.pt&#39;], source=&#39;custom_dataset/images/val/img_99-0.png&#39;, img_size=800, conf_thres=0.8, iou_thres=0.45, device=&#39;&#39;, view_img=False, save_txt=False, save_conf=False, nosave=False, classes=None, agnostic_nms=False, augment=False, update=False, project=&#39;runs/detect&#39;, name=&#39;exp&#39;, exist_ok=False, no_trace=False)
+YOLOR ? v0.1-126-g84932d7 torch 1.12.0+cu113 CUDA:0 (NVIDIA TITAN V, 12064.375MB)
+                                             CUDA:1 (NVIDIA TITAN V, 12066.875MB)
+
+Fusing layers...
+IDetect.fuse
+/home/taiyaki/anaconda3/envs/torch/lib/python3.9/site-packages/torch/functional.py:478: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at  ../aten/src/ATen/native/TensorShape.cpp:2894.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+Model Summary: 208 layers, 6007596 parameters, 0 gradients, 13.0 GFLOPS
+ Convert model to Traced-model...
+ traced_script_module saved!
+ model is traced!
+
+2 ships, Done. (6.8ms) Inference, (1.2ms) NMS
+</pre></div>
+</div>
+<p>推定画像。精度は99%程度
+<img alt="image.png" src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/95636/046a9c26-f639-52cc-027e-4a88b3056e81.png" /></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="keras_model.html" class="btn btn-neutral float-left" title="Docker環境におけるkerasを用いたモデル構築" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="inference.html" class="btn btn-neutral float-right" title="VPUを使った推定" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Shintaro Hashimoto.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
