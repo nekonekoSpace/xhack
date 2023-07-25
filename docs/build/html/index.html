@@ -85,10 +85,12 @@
 <li class="toctree-l1"><a class="reference internal" href="making_model.html">モデル作成</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="making_model.html#id2">2種類の構築方法</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="keras_model.html">Docker環境におけるkerasを用いたモデル構築</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="keras_model.html#id1">出来上がる環境</a></li>
-<li class="toctree-l4"><a class="reference internal" href="keras_model.html#id2">データセットの取得</a></li>
+<li class="toctree-l4"><a class="reference internal" href="keras_model.html#id1">現状の環境</a></li>
+<li class="toctree-l4"><a class="reference internal" href="keras_model.html#id2">出来上がる環境</a></li>
+<li class="toctree-l4"><a class="reference internal" href="keras_model.html#nvidia-container-toolkit">nvidia-container-toolkitの導入</a></li>
 <li class="toctree-l4"><a class="reference internal" href="keras_model.html#docker">docker 環境の構築</a></li>
-<li class="toctree-l4"><a class="reference internal" href="keras_model.html#id3">モデルの構築</a></li>
+<li class="toctree-l4"><a class="reference internal" href="keras_model.html#id3">データセットの取得</a></li>
+<li class="toctree-l4"><a class="reference internal" href="keras_model.html#id4">モデルの構築</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pytorch_model.html">ローカル環境におけるyoloV7のモデル構築</a><ul>
@@ -104,30 +106,27 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="inference.html">VPUを使った推定</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="inference.html#openvino">openvinoを使った推論</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="inference.html#vpu2">VPUを用いた2種類の推論方法</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="keras_vino21.html">openvino21.2.185を用いてdocker上でkerasモデルを推定</a><ul>
-<li class="toctree-l5"><a class="reference internal" href="keras_vino21.html#id1">環境</a></li>
-<li class="toctree-l5"><a class="reference internal" href="keras_vino21.html#vpu">VPUの確認</a></li>
-<li class="toctree-l5"><a class="reference internal" href="keras_vino21.html#id2">VPUを使って自身で作ったモデルの性能を評価</a></li>
+<li class="toctree-l3"><a class="reference internal" href="keras_vino21.html">openvino21.2.185を用いてdocker上でkerasモデルを推定</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keras_vino21.html#id1">環境</a></li>
+<li class="toctree-l4"><a class="reference internal" href="keras_vino21.html#vpu">VPUの確認</a></li>
+<li class="toctree-l4"><a class="reference internal" href="keras_vino21.html#id2">VPUを使って自身で作ったモデルの性能を評価</a></li>
 </ul>
 </li>
-<li class="toctree-l4"><a class="reference internal" href="pytorch_vino22.html">openvino21.2.185を用いてdocker上でkerasモデルを推定</a><ul>
-<li class="toctree-l5"><a class="reference internal" href="pytorch_vino22.html#construct-environment-workstation">Construct Environment (Workstation)</a><ul>
-<li class="toctree-l6"><a class="reference internal" href="pytorch_vino22.html#environment">Environment</a></li>
-<li class="toctree-l6"><a class="reference internal" href="pytorch_vino22.html#install-openvino">Install OpenVino</a><ul>
-<li class="toctree-l7"><a class="reference internal" href="pytorch_vino22.html#runtime">Runtime</a></li>
-<li class="toctree-l7"><a class="reference internal" href="pytorch_vino22.html#development-tool">Development tool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pytorch_vino22.html">openvino21.2.185を用いてdocker上でkerasモデルを推定</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pytorch_vino22.html#construct-environment-workstation">Construct Environment (Workstation)</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="pytorch_vino22.html#environment">Environment</a></li>
+<li class="toctree-l5"><a class="reference internal" href="pytorch_vino22.html#install-openvino">Install OpenVino</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="pytorch_vino22.html#runtime">Runtime</a></li>
+<li class="toctree-l6"><a class="reference internal" href="pytorch_vino22.html#development-tool">Development tool</a></li>
 </ul>
 </li>
-<li class="toctree-l6"><a class="reference internal" href="pytorch_vino22.html#install-ncs2">Install NCS2</a></li>
-<li class="toctree-l6"><a class="reference internal" href="pytorch_vino22.html#install-gpu">Install GPU</a></li>
+<li class="toctree-l5"><a class="reference internal" href="pytorch_vino22.html#install-ncs2">Install NCS2</a></li>
+<li class="toctree-l5"><a class="reference internal" href="pytorch_vino22.html#install-gpu">Install GPU</a></li>
 </ul>
 </li>
-<li class="toctree-l5"><a class="reference internal" href="pytorch_vino22.html#run-of-sample-code">Run of Sample Code</a><ul>
-<li class="toctree-l6"><a class="reference internal" href="pytorch_vino22.html#id1">ハードウェアテスト</a></li>
-<li class="toctree-l6"><a class="reference internal" href="pytorch_vino22.html#id2">サンプルコードを動かす</a></li>
-</ul>
-</li>
+<li class="toctree-l4"><a class="reference internal" href="pytorch_vino22.html#run-of-sample-code">Run of Sample Code</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="pytorch_vino22.html#id1">ハードウェアテスト</a></li>
+<li class="toctree-l5"><a class="reference internal" href="pytorch_vino22.html#id2">サンプルコードを動かす</a></li>
 </ul>
 </li>
 </ul>

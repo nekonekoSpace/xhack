@@ -48,11 +48,8 @@
 <li class="toctree-l1"><a class="reference internal" href="making_model.html">モデル作成</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">VPUを使った推定</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#openvino">openvinoを使った推論</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#vpu2">VPUを用いた2種類の推論方法</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="keras_vino21.html">openvino21.2.185を用いてdocker上でkerasモデルを推定</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pytorch_vino22.html">openvino21.2.185を用いてdocker上でkerasモデルを推定</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="keras_vino21.html">openvino21.2.185を用いてdocker上でkerasモデルを推定</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pytorch_vino22.html">openvino21.2.185を用いてdocker上でkerasモデルを推定</a></li>
 </ul>
 </li>
 </ul>
@@ -85,8 +82,8 @@
              
   <section id="vpu">
 <h1>VPUを使った推定<a class="headerlink" href="#vpu" title="この見出しへのパーマリンク"></a></h1>
-<p>この章では先ほど作った二つのモデルを使ってVPUを使った推論のチューとリアルを行う。</p>
-<p>すでにkerasやpytorchでモデルを作っている人はこの章から、Openvinoを使ってVPUで処理する方法を学んでいただきたい。</p>
+<p>この章では先ほどkerasもしくは、pytorchのどちらかで作ったモデルを使ってVPUを使った推論のチューとリアルを行う。
+すでにkerasやpytorchでモデルを作っている人はこの章から、Openvinoを使ってVPUで処理する方法を学んでいただきたい。</p>
 <section id="openvino">
 <h2>openvinoを使った推論<a class="headerlink" href="#openvino" title="この見出しへのパーマリンク"></a></h2>
 <p>現在openvinoのバージョンとしては21.x  22.x  23.xが出ている。
@@ -95,8 +92,6 @@
 一つ目はopenvino21.xをdockerで動かし、kerasモデルを利用して推論を行う方法である。
 二つ目はopenvino22.x をローカルで動かし、yoloV7モデルを利用して推論を行う方法である。
 個人の環境にあったものをそれぞれのチュートリアルを見ながら適宜構築していただきたい。</p>
-<section id="vpu2">
-<h3>VPUを用いた2種類の推論方法<a class="headerlink" href="#vpu2" title="この見出しへのパーマリンク"></a></h3>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="keras_vino21.html">openvino21.2.185を用いてdocker上でkerasモデルを推定</a><ul>
@@ -126,7 +121,6 @@
 </li>
 </ul>
 </div>
-</section>
 </section>
 </section>
 

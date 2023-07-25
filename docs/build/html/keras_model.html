@@ -48,10 +48,12 @@
 <li class="toctree-l1 current"><a class="reference internal" href="making_model.html">モデル作成</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="making_model.html#id2">2種類の構築方法</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Docker環境におけるkerasを用いたモデル構築</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id1">出来上がる環境</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id2">データセットの取得</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id1">現状の環境</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">出来上がる環境</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#nvidia-container-toolkit">nvidia-container-toolkitの導入</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#docker">docker 環境の構築</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id3">モデルの構築</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">データセットの取得</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">モデルの構築</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pytorch_model.html">ローカル環境におけるyoloV7のモデル構築</a></li>
@@ -92,20 +94,211 @@
 <p>tensorflow.kerasが使えるdocker環境を作り、データセットを使って船舶識別を行うモデル作成まで行います。</p>
 <p>ご自身でモデル構築ができる人は飛ばしてください。</p>
 <section id="id1">
-<h2>出来上がる環境<a class="headerlink" href="#id1" title="この見出しへのパーマリンク"></a></h2>
+<h2>現状の環境<a class="headerlink" href="#id1" title="この見出しへのパーマリンク"></a></h2>
+<ul class="simple">
+<li><p>ubuntu: 18.04</p></li>
+<li><p>Driver Version: 515.105.01</p></li>
+<li><p>CUDA Version: 11.7</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ nvidia-smi
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 515.105.01   Driver Version: 515.105.01   CUDA Version: 11.7     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  NVIDIA TITAN V      On   | 00000000:06:00.0 Off |                  N/A |
+| 32%   47C    P8    28W / 250W |     25MiB / 12288MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+|   1  NVIDIA TITAN V      On   | 00000000:0A:00.0 Off |                  N/A |
+| 28%   39C    P8    25W / 250W |      5MiB / 12288MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
+|    0   N/A  N/A      2177      G   /usr/lib/xorg/Xorg                  9MiB |
+|    0   N/A  N/A      2500      G   /usr/bin/gnome-shell               14MiB |
+|    1   N/A  N/A      2177      G   /usr/lib/xorg/Xorg                  4MiB |
++-----------------------------------------------------------------------------+
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h2>出来上がる環境<a class="headerlink" href="#id2" title="この見出しへのパーマリンク"></a></h2>
 <ul class="simple">
 <li><p>tensorflow 2.6.0</p></li>
 <li><p>python3.6.9</p></li>
 </ul>
 </section>
-<section id="id2">
-<h2>データセットの取得<a class="headerlink" href="#id2" title="この見出しへのパーマリンク"></a></h2>
+<section id="nvidia-container-toolkit">
+<h2>nvidia-container-toolkitの導入<a class="headerlink" href="#nvidia-container-toolkit" title="この見出しへのパーマリンク"></a></h2>
+<p>すでに導入されている場合は飛ばして良い。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
+$ curl -s -L https://nvidia.github.io/nvidia-docker/$(. /etc/os-release;echo $ID$VERSION_ID)/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+$ sudo apt update
+$ sudo apt -y install nvidia-container-toolkit
+</pre></div>
+</div>
+<p>以下のコマンドが実行出来れば完了</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ nvidia-container-cli info
+NVRM version:   515.105.01
+CUDA version:   11.7
+
+Device Index:   0
+Device Minor:   1
+Model:          NVIDIA TITAN V
+Brand:          TITAN
+GPU UUID:       GPU-8a3843c1-8daf-fa8c-a6c1-12a24c75a6b9
+Bus Location:   00000000:06:00.0
+Architecture:   7.0
+
+Device Index:   1
+Device Minor:   0
+Model:          NVIDIA TITAN V
+Brand:          TITAN
+GPU UUID:       GPU-8480bc57-d009-1175-2d29-b8ad2b4523f6
+Bus Location:   00000000:0a:00.0
+Architecture:   7.0
+
+</pre></div>
+</div>
+<p>一度dockerを再起動しておく</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo systemctl restart docker
+</pre></div>
+</div>
+<p>コンテナを立ち上げてエラーが出なければ問題なし</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker run --rm --gpus all nvidia/cuda:11.0.3-base nvidia-smi
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 515.105.01   Driver Version: 515.105.01   CUDA Version: 11.7     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  NVIDIA TITAN V      On   | 00000000:06:00.0 Off |                  N/A |
+| 32%   47C    P8    28W / 250W |     25MiB / 12288MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+|   1  NVIDIA TITAN V      On   | 00000000:0A:00.0 Off |                  N/A |
+| 28%   39C    P8    25W / 250W |      5MiB / 12288MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
++-----------------------------------------------------------------------------+
+</pre></div>
+</div>
+<p>エラーが出るようであれば、自身のcudaのバージョンを確認してみる</p>
 </section>
 <section id="docker">
 <h2>docker 環境の構築<a class="headerlink" href="#docker" title="この見出しへのパーマリンク"></a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>./
+├── workspace
+│   ├── 
+│   │   ├── x_test.npy
+│   │   └── y_test.npy
+│   ├── 
+│   └── 
+├── Docker
+└── docker-compose.yml
+</pre></div>
+</div>
+<ul>
+<li><p>docker-compose.yml</p>
+<div class="highlight-Docker notranslate"><div class="highlight"><pre><span></span>version:<span class="w"> </span><span class="s2">&quot;3.2&quot;</span>
+services:
+tensorflow_keras:
+<span class="w">    </span>build:
+<span class="w">    </span>context:<span class="w"> </span>.
+<span class="w">    </span>dockerfile:<span class="w"> </span>Dockerfile
+<span class="w">    </span>image:<span class="w"> </span><span class="s2">&quot;tensorflwo-keras26&quot;</span>
+<span class="w">    </span>container_name:<span class="w"> </span><span class="s2">&quot;your_container_name&quot;</span>
+<span class="w">    </span>volumes:
+<span class="w">    </span>-<span class="w"> </span>./workspace:/workspace
+<span class="w">    </span>ports:
+<span class="w">    </span>-<span class="w"> </span><span class="m">8888</span>:8888
+<span class="w">    </span>deploy:
+<span class="w">    </span>resources:
+<span class="w">        </span>reservations:
+<span class="w">        </span>devices:
+<span class="w">            </span>-<span class="w"> </span>driver:<span class="w"> </span>nvidia
+<span class="w">            </span>count:<span class="w"> </span><span class="m">1</span>
+<span class="w">            </span>capabilities:<span class="w"> </span><span class="o">[</span>gpu<span class="o">]</span>
+<span class="w">    </span>environment:
+<span class="w">    </span>-<span class="w"> </span><span class="nv">NVIDIA_VISIBLE_DEVICES</span><span class="o">=</span>all
+<span class="w">    </span>tty:<span class="w"> </span>true
+</pre></div>
+</div>
+</li>
+<li><p>Docker</p>
+<div class="highlight-Docker notranslate"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="w"> </span><span class="s">tensorflow/tensorflow:2.6.0-gpu-jupyter</span>
+<span class="k">SHELL</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;/bin/bash&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-c&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+</ul>
 </section>
 <section id="id3">
-<h2>モデルの構築<a class="headerlink" href="#id3" title="この見出しへのパーマリンク"></a></h2>
+<h2>データセットの取得<a class="headerlink" href="#id3" title="この見出しへのパーマリンク"></a></h2>
+<p>今回はkaggleで利用されているデータセットを用いて学習を行う。</p>
+<p>https://www.kaggle.com/datasets/rhammell/ships-in-satellite-imager</p>
+<p>このデータセットは80 $\times$ 80ピクセルの4000枚のRGB画像が含まれており、それらは船か船以外かのラベルを持っている。
+詳しくはコンテストページを参照していただきたい。</p>
+<p>データセットをダウンロードをダウンロードすると<code class="docutils literal notranslate"><span class="pre">/shipsnet/shipsnet</span></code>に画像データが存在しており、<code class="docutils literal notranslate"><span class="pre">./shipsnet.json</span></code>に数値データが入っているので、使いやすいようにnpyデータとラベルのセットを作成する。</p>
+<ul>
+<li><p>make_dataset.py</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span>  <span class="k">as</span> <span class="nn">pd</span> 
+<span class="kn">import</span> <span class="nn">json</span> 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
+<span class="kn">from</span> <span class="nn">keras.utils</span> <span class="kn">import</span> <span class="n">to_categorical</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;shipsnet.json&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">data_file</span><span class="p">:</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data_file</span><span class="p">)</span>
+<span class="n">shipsnet</span><span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+<span class="n">shipsnet</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+
+<span class="n">shipsnet</span> <span class="o">=</span> <span class="n">shipsnet</span><span class="p">[[</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;labels&quot;</span><span class="p">]]</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="s1">&#39;labels&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">)</span>
+<span class="n">x_reshaped</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">])</span><span class="o">.</span><span class="n">transpose</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">y_reshaped</span> <span class="o">=</span> <span class="n">to_categorical</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">x_reshaped</span> <span class="o">=</span> <span class="n">x_reshaped</span> <span class="o">/</span> <span class="mi">255</span>
+<span class="n">x_train</span><span class="p">,</span> <span class="n">x_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">x_reshaped</span><span class="p">,</span> <span class="n">y_reshaped</span><span class="p">,</span>
+                                                        <span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.20</span><span class="p">,</span> <span class="n">random_state</span> <span class="o">=</span> <span class="mi">42</span><span class="p">)</span>
+<span class="c1">#学習データとテストデータを8：2で分割</span>
+
+<span class="n">x_train</span><span class="p">,</span> <span class="n">x_val</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_val</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> 
+                                                <span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">,</span> <span class="n">random_state</span> <span class="o">=</span> <span class="mi">42</span><span class="p">)</span>
+<span class="c1">#学習データのうちの25％を検証データとして利用</span>
+<span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;out/x_train&quot;</span><span class="p">,</span><span class="n">x_train</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;out/y_train&quot;</span><span class="p">,</span><span class="n">y_train</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;out/x_val&quot;</span><span class="p">,</span><span class="n">x_val</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;out/y_val&quot;</span><span class="p">,</span><span class="n">y_val</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;out/y_test&quot;</span><span class="p">,</span><span class="n">y_test</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;out/x_test&quot;</span><span class="p">,</span><span class="n">x_test</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>実行すると./outに学習データ、検証データ、テストデータが生成されるのでworkspaceに展開する。
+今後はこれらのデータを使って学習と推論を進める。</p>
+</li>
+</ul>
+</section>
+<section id="id4">
+<h2>モデルの構築<a class="headerlink" href="#id4" title="この見出しへのパーマリンク"></a></h2>
+<p>今回のモデルでは単純な3層CNNを作成する。外観は以下のようになる。
+<img alt="cnn-fig" src="_images/cnn-fig.png" /></p>
 </section>
 </section>
 
