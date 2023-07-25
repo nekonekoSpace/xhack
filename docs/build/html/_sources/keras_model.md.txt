@@ -213,3 +213,135 @@ https://www.kaggle.com/datasets/rhammell/ships-in-satellite-imager
 今回のモデルでは単純な3層CNNを作成する。外観は以下のようになる。
 ![cnn-fig](./fig/cnn-fig.png)
 
+以下コード
+
+- model.py
+
+    ```python
+
+    import os 
+    import numpy as np 
+
+
+    from sklearn.metrics import classification_report,accuracy_score
+    from tensorflow.keras.layers import Input,Conv2D,MaxPooling2D,Dropout,Flatten,Dense
+    from tensorflow.keras import Model
+    from tensorflow.keras import callbacks
+    from tensorflow.keras.models import load_model
+
+    import tensorflow as tf
+    from tensorflow.python.framework.convert_to_constants import convert_variables_to_constants_v2
+    import time
+
+
+
+    model_save = True
+    model_name = "cnn-model.h5"
+
+    def convert_h5_to_pb():
+        tf.keras.backend.clear_session()
+        save_pb_dir = './pb'
+        model_fname = f'./keras/{model_name}'
+        model = load_model(model_fname, compile=False)     
+        file,ext = os.path.splitext(model_name)
+        # model.save(f"{save_pb_dir}/{file}")
+
+        #もしtensorflowがv1だとfalseになる
+        print(tf.executing_eagerly())  
+
+        full_model = tf.function(lambda x: model(x))
+        full_model = full_model.get_concrete_function(tf.TensorSpec(model.input_shape, tf.float32, name="input_L"))
+        # Get frozen ConcreteFunction
+        concrete_function = convert_variables_to_constants_v2(full_model)
+        concrete_function.graph.as_graph_def()
+        layers = [op.name for op in concrete_function.graph.get_operations()]
+
+        #モデルを固定する(frozen modelに変換する)
+        frozen_model = convert_variables_to_constants_v2(concrete_function)
+        tf.io.write_graph(frozen_model.graph, save_pb_dir, "cnn-model.pb", as_text=False)
+
+
+
+    def main():
+        x_test = np.load('./out/x_test.npy')
+        x_train = np.load('./out/x_train.npy')
+        x_val = np.load('./out/x_val.npy')
+        y_test = np.load('./out/y_test.npy')
+        y_train = np.load('./out/y_train.npy')
+        y_val= np.load('./out/y_val.npy')
+
+
+        if os.path.exists(os.path.join("./keras",model_name)):
+            print("tuning .....")
+            model = load_model(os.path.join("./keras",model_name))
+            model.summary()
+        else:
+            print(f'load model:{model_name}')
+            model =tuning(x_train,x_val,y_train,y_val)  
+
+        s = time.perf_counter()
+        pred = model.predict(x_test)
+        print(f'time:{time.perf_counter()-s}')
+        pred = np.argmax(pred,axis=1)
+        y_test = np.argmax(y_test,axis=1)
+        ac_score = accuracy_score(pred, y_test)
+        print(ac_score)
+        convert_h5_to_pb()
+
+        return 
+
+
+    def tuning(x_train,x_val,y_train,y_val):
+        #自作モデルはここを書き換え
+
+        inputs = Input(shape=(80,80,3), name='input_L')
+        x=  Conv2D(filters=64,kernel_size=(4,4),padding='same',activation='relu')(inputs)
+        x = MaxPooling2D(pool_size=(5,5))(x)
+        x = Dropout(0.25)(x)
+        x = Conv2D(filters=32,kernel_size=(3,3),padding='same',activation='relu')(x)
+        x = MaxPooling2D(pool_size=(3,3),strides=(1,1))(x)
+        x = Dropout(0.25)(x)
+        x = Conv2D(filters=16,kernel_size=(2,2),padding='same',activation='relu')(x)
+        x = MaxPooling2D(pool_size=(3,3),strides=(1,1))(x)
+        x = Dropout(0.25)(x)
+        x =  Flatten()(x)
+        x = Dense(200,activation='relu',name ='hidden200')(x)
+        x = Dropout(0.5)(x)
+        x = Dense(100,activation='relu')(x)
+        x = Dropout(0.5)(x)
+        x = Dense(100,activation='relu')(x)
+        x = Dropout(0.5)(x)
+        x = Dense(50,activation='relu')(x)
+        x = Dropout(0.5)(x)
+        predictions = Dense(2, activation='softmax', name='output_L')(x)
+        model = Model(inputs=inputs,outputs=predictions)
+        model.compile(optimizer='adam',
+                    loss = 'categorical_crossentropy',
+                    metrics=["accuracy"])
+        model.summary()
+        earlystopping = callbacks.EarlyStopping(monitor ="val_loss", 
+                                                mode ="min", patience = 10, 
+                                                restore_best_weights = True)
+        hist    = model.fit(x_train,y_train,validation_data=(x_val, y_val),epochs=100,callbacks=[earlystopping])
+        if model_save:
+            model.save(f"./keras/{model_name}")
+
+        return model 
+        
+
+    if __name__=="__main__":
+        main()
+
+    ```
+
+プログラムを実行すると`./pb`と`./keras`にモデルが出力される。
+
+`h5`形式から`pb`形式に変換する際にエラーが出る場合はtensorflowのバージョンなどを確認してみてください。
+
+
+
+
+
+
+
+次には`./pb`に出力された`cnn-model.pb`を
