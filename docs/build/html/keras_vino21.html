@@ -93,7 +93,7 @@
 <h2>docker環境の構築<a class="headerlink" href="#docker" title="この見出しへのパーマリンク"></a></h2>
 <p>ご自身が作られた<code class="docutils literal notranslate"><span class="pre">pb</span></code>形式モデルをOpenvinoで利用可能なIR形式に変換するための環境を構築します。</p>
 <section id="id1">
-<h3>環境<a class="headerlink" href="#id1" title="この見出しへのパーマリンク"></a></h3>
+<h3>前提環境<a class="headerlink" href="#id1" title="この見出しへのパーマリンク"></a></h3>
 <ul class="simple">
 <li><p>Ubuntu 18.04</p></li>
 <li><p>Docker Compose version v2.6.1</p></li>
@@ -349,13 +349,16 @@ It&#39;s been a while, check for a new version of Intel(R) Distribution of OpenV
 <section id="vpu">
 <h3>VPUの確認<a class="headerlink" href="#vpu" title="この見出しへのパーマリンク"></a></h3>
 <p>以下のファイルを作成</p>
-<p>hardware.py</p>
+<ul>
+<li><p>hardware.py</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">openvino.inference_engine</span> <span class="kn">import</span> <span class="n">IECore</span>
 <span class="n">ie</span> <span class="o">=</span> <span class="n">IECore</span><span class="p">()</span>
 <span class="n">devices</span> <span class="o">=</span> <span class="n">ie</span><span class="o">.</span><span class="n">available_devices</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">devices</span><span class="p">)</span>
 </pre></div>
 </div>
+</li>
+</ul>
 <p>作成したファイルを実行</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>python3<span class="w"> </span>hardware.py<span class="w"> </span>
 <span class="o">[</span>E:<span class="o">]</span><span class="w"> </span><span class="o">[</span>BSL<span class="o">]</span><span class="w"> </span>found<span class="w"> </span><span class="m">0</span><span class="w"> </span>ioexpander<span class="w"> </span>device

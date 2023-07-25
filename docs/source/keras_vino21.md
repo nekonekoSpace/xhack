@@ -8,7 +8,7 @@
 ご自身が作られた`pb`形式モデルをOpenvinoで利用可能なIR形式に変換するための環境を構築します。
 
 
-### 環境
+### 前提環境
  - Ubuntu 18.04
  - Docker Compose version v2.6.1
  - NCS2 (VPU)
@@ -276,13 +276,13 @@ It's been a while, check for a new version of Intel(R) Distribution of OpenVINO(
 以下のファイルを作成
 
 
-hardware.py
-```python
-from openvino.inference_engine import IECore
-ie = IECore()
-devices = ie.available_devices
-print(devices)
-```
+- hardware.py
+    ```python
+    from openvino.inference_engine import IECore
+    ie = IECore()
+    devices = ie.available_devices
+    print(devices)
+    ```
 
 作成したファイルを実行
 
