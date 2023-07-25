@@ -339,9 +339,3 @@ https://www.kaggle.com/datasets/rhammell/ships-in-satellite-imager
 `h5`形式から`pb`形式に変換する際にエラーが出る場合はtensorflowのバージョンなどを確認してみてください。
 
 
-
-
-
-
-
-次には`./pb`に出力された`cnn-model.pb`を

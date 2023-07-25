@@ -47,11 +47,10 @@
 <li class="toctree-l1"><a class="reference internal" href="intro.html">はじめに</a></li>
 <li class="toctree-l1"><a class="reference internal" href="making_model.html">モデル作成</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="inference.html">VPUを使った推定</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="inference.html#vpu2">VPUを用いた2種類の推論方法</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="inference.html#openvino">openvinoを使った推論</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">openvino21.2.185を用いてdocker上でkerasモデルを推定</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id1">環境</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#vpu">VPUの確認</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id2">VPUを使って自身で作ったモデルの性能を評価</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#docker">docker環境の構築</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5">推論</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pytorch_vino22.html">openvino21.2.185を用いてdocker上でkerasモデルを推定</a></li>
@@ -89,8 +88,179 @@
   <section id="openvino21-2-185dockerkeras">
 <h1>openvino21.2.185を用いてdocker上でkerasモデルを推定<a class="headerlink" href="#openvino21-2-185dockerkeras" title="この見出しへのパーマリンク"></a></h1>
 <p>先ほど作った環境上で自身が作ったプログラムをCPU・VPUで実行する。</p>
+<section id="docker">
+<h2>docker環境の構築<a class="headerlink" href="#docker" title="この見出しへのパーマリンク"></a></h2>
+<p>ご自身が作られた<code class="docutils literal notranslate"><span class="pre">pb</span></code>形式モデルをOpenvinoで利用可能なIR形式に変換するための環境を構築します。</p>
 <section id="id1">
-<h2>環境<a class="headerlink" href="#id1" title="この見出しへのパーマリンク"></a></h2>
+<h3>環境<a class="headerlink" href="#id1" title="この見出しへのパーマリンク"></a></h3>
+<ul class="simple">
+<li><p>Ubuntu 18.04</p></li>
+<li><p>Docker Compose version v2.6.1</p></li>
+<li><p>NCS2 (VPU)</p></li>
+</ul>
+</section>
+<section id="id2">
+<h3>ディレクトリ構成<a class="headerlink" href="#id2" title="この見出しへのパーマリンク"></a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>openvino_2021
+├── docker-compose.yml
+├── Dockerfile
+└── workspace
+    ├── data
+    └── model
+        ├── pb
+        └── IR
+</pre></div>
+</div>
+</section>
+<section id="id3">
+<h3>コンテナ立ち上げまでの手順<a class="headerlink" href="#id3" title="この見出しへのパーマリンク"></a></h3>
+<ol class="arabic">
+<li><p>ディレクトリ構成を基本にして必要なファイルを作成する</p>
+<ul>
+<li><p>Dockerfile</p>
+<div class="highlight-Dockerfile notranslate"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="w"> </span><span class="s">spacecloud.unibap.com/unibap/framework-baseimage:latest</span>
+<span class="k">SHELL</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;/bin/bash&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-c&quot;</span><span class="p">]</span>
+<span class="k">RUN</span><span class="w">  </span>apt-get<span class="w"> </span>update<span class="w">  </span>
+<span class="k">RUN</span><span class="w">  </span>apt-get<span class="w"> </span>install<span class="w"> </span>sudo<span class="w">  </span>
+<span class="k">RUN</span><span class="w"> </span>python3.6<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>setuptools
+
+<span class="k">WORKDIR</span><span class="w">  </span><span class="s">/opt/intel/openvino_2021/deployment_tools/model_optimizer/install_prerequisites</span>
+<span class="k">RUN</span><span class="w"> </span>bash<span class="w"> </span>./install_prerequisites_tf2.sh<span class="w">  </span>
+</pre></div>
+</div>
+</li>
+<li><p>docker-compose.yml</p>
+<div class="highlight-Dockerfile notranslate"><div class="highlight"><pre><span></span>version:<span class="w"> </span><span class="s2">&quot;3.2&quot;</span>
+<span class="w">    </span>services:
+<span class="w">    </span>ubuntu:
+<span class="w">        </span>cpuset<span class="w"> </span>:<span class="w"> </span><span class="s2">&quot;0&quot;</span><span class="w">        </span>#dokcer<span class="w"> </span>から見えるCPUの番号<span class="w"> </span>ex<span class="o">)</span><span class="w"> </span><span class="s2">&quot;0,1,3&quot;</span>
+<span class="w">        </span>build:
+<span class="w">        </span>context:<span class="w"> </span>.
+<span class="w">        </span>dockerfile:<span class="w"> </span>Dockerfile
+<span class="w">        </span>container_name:<span class="w"> </span><span class="s2">&quot;your_container_name&quot;</span>
+<span class="w">        </span>device_cgroup_rules:
+<span class="w">        </span>-<span class="w"> </span><span class="s1">&#39;c 189:* rmw&#39;</span>
+<span class="w">        </span>volumes:
+<span class="w">        </span>-<span class="w"> </span>/dev/bus/usb:/dev/bus/usb<span class="w">   </span>
+<span class="w">        </span>-<span class="w"> </span>./workspace:/workspace
+<span class="w">        </span>tty:<span class="w"> </span>true
+</pre></div>
+</div>
+</li>
+<li><p>workspace</p>
+<p>ドッカー環境とマウントして操作を行う</p>
+</li>
+</ul>
+</li>
+<li><p>Docker imageを作成</p>
+<p><code class="docutils literal notranslate"><span class="pre">./openvino_2021</span></code>で</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>build<span class="w"> </span>
+<span class="w"> </span><span class="o">[</span>+<span class="o">]</span><span class="w"> </span>Building<span class="w"> </span><span class="m">0</span>.1s<span class="w"> </span><span class="o">(</span><span class="m">5</span>/5<span class="o">)</span><span class="w"> </span><span class="nv">FINISHED</span><span class="w">                                                                                          </span>
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">[</span>internal<span class="o">]</span><span class="w"> </span>load<span class="w"> </span>.dockerignore<span class="w">                                                                                                                                                                                          </span><span class="m">0</span>.0s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>transferring<span class="w"> </span>context:<span class="w"> </span>2B<span class="w">                                                                                                                                                                                            </span><span class="m">0</span>.0s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">[</span>internal<span class="o">]</span><span class="w"> </span>load<span class="w"> </span>build<span class="w"> </span>definition<span class="w"> </span>from<span class="w"> </span>Dockerfile<span class="w">                                                                                                                                                                       </span><span class="m">0</span>.0s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>transferring<span class="w"> </span>dockerfile:<span class="w"> </span>126B<span class="w">                                                                                                                                                                                       </span><span class="m">0</span>.0s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">[</span>internal<span class="o">]</span><span class="w"> </span>load<span class="w"> </span>metadata<span class="w"> </span><span class="k">for</span><span class="w"> </span>spacecloud.unibap.com/unibap/framework-baseimage:latest<span class="w">                                                                                                                                   </span><span class="m">0</span>.0s
+<span class="o">=</span>&gt;<span class="w"> </span>CACHED<span class="w"> </span><span class="o">[</span><span class="m">1</span>/1<span class="o">]</span><span class="w"> </span>FROM<span class="w"> </span>spacecloud.unibap.com/unibap/framework-baseimage:latest<span class="w">                                                                                                                                              </span><span class="m">0</span>.0s
+<span class="o">=</span>&gt;<span class="w"> </span>exporting<span class="w"> </span>to<span class="w"> </span>image<span class="w">                                                                                                                                                                                                     </span><span class="m">0</span>.0s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>exporting<span class="w"> </span>layers<span class="w">                                                                                                                                                                                                    </span><span class="m">0</span>.0s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>writing<span class="w"> </span>image<span class="w"> </span>sha256:a842a0629c502410d5193ed9ca1f9722a4e2349382b6e3cf3d6c98343dbbe159<span class="w">                                                                                                                               </span><span class="m">0</span>.0s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>naming<span class="w"> </span>to<span class="w"> </span>docker.io/library/your_docker_image:latest<span class="w">                                                                                                                                                                </span><span class="m">0</span>.0s
+</pre></div>
+</div>
+</li>
+<li><p>コンテナを立ち上げる</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>
+<span class="o">[</span>+<span class="o">]</span><span class="w"> </span>Running<span class="w"> </span><span class="m">1</span>/0
+⠿<span class="w"> </span>Container<span class="w"> </span>your_container_name<span class="w">  </span>Created<span class="w">                                                                                                                                                                                  </span><span class="m">0</span>.0s
+Attaching<span class="w"> </span>to<span class="w"> </span>your_container_name
+your_container_name<span class="w">  </span><span class="p">|</span><span class="w"> </span><span class="o">[</span>setupvars.sh<span class="o">]</span><span class="w"> </span>OpenVINO<span class="w"> </span>environment<span class="w"> </span>initialized
+</pre></div>
+</div>
+</li>
+<li><p>新しいターミナルで立ち上げたdocker環境に入る</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>openvino_2021<span class="w"> </span>bash
+<span class="o">[</span>setupvars.sh<span class="o">]</span><span class="w"> </span>OpenVINO<span class="w"> </span>environment<span class="w"> </span>initialized
+root@32cbe7171e82:/#<span class="w"> </span>
+</pre></div>
+</div>
+<p>もしくは</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>your_container_name<span class="w"> </span>bash
+<span class="o">[</span>setupvars.sh<span class="o">]</span><span class="w"> </span>OpenVINO<span class="w"> </span>environment<span class="w"> </span>initialized
+root@32cbe7171e82:/#<span class="w"> </span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="id4">
+<h3>作られるdockerの環境<a class="headerlink" href="#id4" title="この見出しへのパーマリンク"></a></h3>
+<ul class="simple">
+<li><p>openvino: 2021.2.185</p></li>
+<li><p>python: 3.6.9</p></li>
+<li><p>tensorflow: 2.6.2</p></li>
+</ul>
+</section>
+<section id="pbir">
+<h3>pbモデルをIRモデルに変換する<a class="headerlink" href="#pbir" title="この見出しへのパーマリンク"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">./workspace/model/pb</span></code>に作った<code class="docutils literal notranslate"><span class="pre">model.pb</span></code>を入れる
+その後以下のコマンドを実行してpbのモデルをIR形式に変換する</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ cd  /opt/intel/openvino_2021/deployment_tools/model_optimizer/
+$ python3 mo.py --input_model &quot;/workspace/model/pb/model.pb&quot; --output_dir &quot;/workspace/model/IR&quot;  --input_shape [1,80,80,3]
+
+Model Optimizer arguments:
+Common parameters:
+        - Path to the Input Model:      /workspace/model/pb/model.pb
+        - Path for generated IR:        /workspace/model/IR
+        - IR output name:       model
+        - Log level:    ERROR
+        - Batch:        Not specified, inherited from the model
+        - Input layers:         Not specified, inherited from the model
+        - Output layers:        Not specified, inherited from the model
+        - Input shapes:         [1,80,80,3]
+        - Mean values:  Not specified
+        - Scale values:         Not specified
+        - Scale factor:         Not specified
+        - Precision of IR:      FP32
+        - Enable fusing:        True
+        - Enable grouped convolutions fusing:   True
+        - Move mean values to preprocess section:       None
+        - Reverse input channels:       False
+TensorFlow specific parameters:
+        - Input model in text protobuf format:  False
+        - Path to model dump for TensorBoard:   None
+        - List of shared libraries with TensorFlow custom layers implementation:        None
+        - Update the configuration file with input/output node names:   None
+        - Use configuration file used to generate the model with Object Detection API:  None
+        - Use the config file:  None
+Model Optimizer version:        2021.2.0-1877-176bdf51370-releases/2021/2
+2023-07-14 02:49:21.590357: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library &#39;libcudart.so.11.0&#39;; dlerror: libcudart.so.11.0: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /opt/intel/openvino/opencv/lib:/opt/intel/openvino/deployment_tools/ngraph/lib:/opt/intel/openvino/deployment_tools/inference_engine/external/hddl/lib:/opt/intel/openvino/deployment_tools/inference_engine/external/gna/lib:/opt/intel/openvino/deployment_tools/inference_engine/external/mkltiny_lnx/lib:/opt/intel/openvino/deployment_tools/inference_engine/external/tbb/lib:/opt/intel/openvino/deployment_tools/inference_engine/lib/intel64
+2023-07-14 02:49:21.590402: I tensorflow/stream_executor/cuda/cudart_stub.cc:29] Ignore above cudart dlerror if you do not have a GPU set up on your machine.
+
+[ SUCCESS ] Generated IR version 10 model.
+[ SUCCESS ] XML file: /workspace/model/IR/model.xml
+[ SUCCESS ] BIN file: /workspace/model/IR/model.bin
+[ SUCCESS ] Total execution time: 3.88 seconds. 
+[ SUCCESS ] Memory consumed: 307 MB. 
+It&#39;s been a while, check for a new version of Intel(R) Distribution of OpenVINO(TM) toolkit here https://software.intel.com/content/www/us/en/develop/tools/openvino-toolkit/choose-download.html?cid=other&amp;source=Prod&amp;campid=ww_2021_bu_IOTG&amp;content=upg_pro&amp;medium=organic_uid_agjj or on the GitHub*
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">workspace/model/IR/</span></code>に</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">model.bin</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">model.xml</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">model.mapping</span></code></p></li>
+</ul>
+<p>の3つのフォルダが生成される</p>
+<p>この時オプションとして　
+<code class="docutils literal notranslate"><span class="pre">--data_type</span> <span class="pre">'FP16',</span> <span class="pre">'FP32',</span> <span class="pre">'half',</span> <span class="pre">'float'</span></code> を選ぶことができる
+（デフォルトはFP32）</p>
+</section>
+</section>
+<section id="id5">
+<h2>推論<a class="headerlink" href="#id5" title="この見出しへのパーマリンク"></a></h2>
+<section id="id6">
+<h3>ディレクトリ構造<a class="headerlink" href="#id6" title="この見出しへのパーマリンク"></a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>workspace
 ├── inference
 │   ├── data
@@ -176,7 +346,7 @@
 </div>
 </section>
 <section id="vpu">
-<h2>VPUの確認<a class="headerlink" href="#vpu" title="この見出しへのパーマリンク"></a></h2>
+<h3>VPUの確認<a class="headerlink" href="#vpu" title="この見出しへのパーマリンク"></a></h3>
 <p>以下のファイルを作成</p>
 <p>hardware.py</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">openvino.inference_engine</span> <span class="kn">import</span> <span class="n">IECore</span>
@@ -193,8 +363,8 @@
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">MYRIAD</span></code>があればVPUが使用できる状態になっている。</p>
 </section>
-<section id="id2">
-<h2>VPUを使って自身で作ったモデルの性能を評価<a class="headerlink" href="#id2" title="この見出しへのパーマリンク"></a></h2>
+<section id="id7">
+<h3>VPUを使って自身で作ったモデルの性能を評価<a class="headerlink" href="#id7" title="この見出しへのパーマリンク"></a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>/workspace/inference
 $<span class="w"> </span>python3<span class="w"> </span>run.py<span class="w"> </span>
 <span class="nb">time</span><span class="w"> </span>is<span class="w"> </span><span class="m">3</span>.9357731910422444<span class="w"> </span>with<span class="w"> </span>MYRIAD<span class="p">;</span>
@@ -209,10 +379,11 @@ score<span class="w"> </span>is<span class="w"> </span>:0.99125
 </pre></div>
 </div>
 <p>docker-compose.ymlで指定した有効CPUの数が1の時、以下のようなエラーが出る場合があるが今のところ問題ない。</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>E: [global] [    124159] [python3] XLink_sem_wait:94     XLink_sem_inc(sem) method call failed with an error: -1
-E: [global] [    124159] [python3] XLinkResetRemote:257 can&#39;t wait dispatcherClosedSem
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">E</span><span class="p">:</span> <span class="p">[</span><span class="k">global</span><span class="p">]</span> <span class="p">[</span>    <span class="mi">124159</span><span class="p">]</span> <span class="p">[</span><span class="n">python3</span><span class="p">]</span> <span class="n">XLink_sem_wait</span><span class="p">:</span><span class="mi">94</span>     <span class="n">XLink_sem_inc</span><span class="p">(</span><span class="n">sem</span><span class="p">)</span> <span class="n">method</span> <span class="n">call</span> <span class="n">failed</span> <span class="k">with</span> <span class="n">an</span> <span class="n">error</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span>
+<span class="n">E</span><span class="p">:</span> <span class="p">[</span><span class="k">global</span><span class="p">]</span> <span class="p">[</span>    <span class="mi">124159</span><span class="p">]</span> <span class="p">[</span><span class="n">python3</span><span class="p">]</span> <span class="n">XLinkResetRemote</span><span class="p">:</span><span class="mi">257</span> <span class="n">can</span><span class="s1">&#39;t wait dispatcherClosedSem</span>
 </pre></div>
 </div>
+</section>
 </section>
 </section>
 
