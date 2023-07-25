@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>openvino21.2.185を用いてdocker上でkerasモデルを推定 &mdash; jaxaHackathon None ドキュメント</title>
+  <title>openvino21.2を用いてdocker上でkerasモデルを推定 &mdash; jaxaHackathon None ドキュメント</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -48,7 +48,7 @@
 <li class="toctree-l1"><a class="reference internal" href="making_model.html">モデル作成</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="inference.html">VPUを使った推定</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="inference.html#openvino">openvinoを使った推論</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">openvino21.2.185を用いてdocker上でkerasモデルを推定</a><ul>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">openvino21.2を用いてdocker上でkerasモデルを推定</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#docker">docker環境の構築</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#id5">推論</a></li>
 </ul>
@@ -75,7 +75,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="inference.html">VPUを使った推定</a></li>
-      <li class="breadcrumb-item active">openvino21.2.185を用いてdocker上でkerasモデルを推定</li>
+      <li class="breadcrumb-item active">openvino21.2を用いてdocker上でkerasモデルを推定</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/keras_vino21.md.txt" rel="nofollow"> View page source</a>
       </li>
@@ -85,9 +85,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="openvino21-2-185dockerkeras">
-<h1>openvino21.2.185を用いてdocker上でkerasモデルを推定<a class="headerlink" href="#openvino21-2-185dockerkeras" title="この見出しへのパーマリンク"></a></h1>
-<p>先ほど作った環境上で自身が作ったプログラムをCPU・VPUで実行する。</p>
+  <section id="openvino21-2dockerkeras">
+<h1>openvino21.2を用いてdocker上でkerasモデルを推定<a class="headerlink" href="#openvino21-2dockerkeras" title="この見出しへのパーマリンク"></a></h1>
+<p>先ほど作った環境上で自身が作ったプログラムをCPU・VPUで実行する。
+流れとしては<code class="docutils literal notranslate"><span class="pre">pb</span></code>形式を<code class="docutils literal notranslate"><span class="pre">IR</span></code>形式に変換し、IR形式のモデルを用いて推論を行う。</p>
 <section id="docker">
 <h2>docker環境の構築<a class="headerlink" href="#docker" title="この見出しへのパーマリンク"></a></h2>
 <p>ご自身が作られた<code class="docutils literal notranslate"><span class="pre">pb</span></code>形式モデルをOpenvinoで利用可能なIR形式に変換するための環境を構築します。</p>

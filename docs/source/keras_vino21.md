@@ -1,7 +1,7 @@
 
-# openvino21.2.185を用いてdocker上でkerasモデルを推定
+# openvino21.2を用いてdocker上でkerasモデルを推定
 先ほど作った環境上で自身が作ったプログラムをCPU・VPUで実行する。
-
+流れとしては`pb`形式を`IR`形式に変換し、IR形式のモデルを用いて推論を行う。
 
 ##  docker環境の構築
 
