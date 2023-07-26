@@ -6,34 +6,18 @@
 
 
 ********************
-OpenVino Introd
+説明2
 ********************
 
-PYNQ is an open-source project from AMD. It provides a Jupyter-based
-framework with Python APIs for using AMD Xilinx Adaptive Computing platforms.
-PYNQ supports ZynqR and Zynq Ultrascale+?, Zynq RFSoC?, Kria? SOMs, Alveo?
-and AWS-F1 instances.
+hogehoge
 
-PYNQ enables architects, engineers
-and programmers who design embedded systems to use Adaptive Computing
-platforms, without having
-to use ASIC-style design tools to design programmable logic circuits.
 
 
 ********************
-PYNQ Background
+説明2
 ********************
 
-* Programmable logic circuits are presented as hardware libraries called
-  *overlays*.  These overlays are analogous to software libraries.  A software
-  engineer can select the overlay that best matches their application.  The
-  overlay can be accessed through an Python API. Creating a new overlay still 
-  requires engineers with expertise in designing programmable logic circuits.  
-  The key difference however, is the
-  *build once, re-use many times* paradigm. Overlays, like software libraries,
-  are designed to be configurable and re-used as often as possible in many
-  different applications.
-
+hugahuga
 
 
 ********************
