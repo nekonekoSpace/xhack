@@ -1,4 +1,4 @@
-#  ローカル環境におけるyoloV7のモデル構築
+#  yoloV7を用いた船舶検知 (local)
 YOLO v7-tinyをNCS2で動作させたい。ただし、YOLO v7のKeras版がないので、Torch版で進めていく。
 最終的にProtoBufferやONNXに変換できればMOでIR形式に変換できるのでOK。
 

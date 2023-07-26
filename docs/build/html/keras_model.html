@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Docker環境におけるkerasを用いたモデル構築 &mdash; jaxaHackathon None ドキュメント</title>
+  <title>keras-2.6を用いた2クラス部類 (docker) &mdash; jaxaHackathon None ドキュメント</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -47,7 +47,7 @@
 <li class="toctree-l1"><a class="reference internal" href="intro.html">はじめに</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="making_model.html">モデル作成</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="making_model.html#id2">2種類の構築方法</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Docker環境におけるkerasを用いたモデル構築</a><ul>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">keras-2.6を用いた2クラス部類 (docker)</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#id1">現状の環境</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#id2">出来上がる環境</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#nvidia-container-toolkit">nvidia-container-toolkitの導入</a></li>
@@ -79,7 +79,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="making_model.html">モデル作成</a></li>
-      <li class="breadcrumb-item active">Docker環境におけるkerasを用いたモデル構築</li>
+      <li class="breadcrumb-item active">keras-2.6を用いた2クラス部類 (docker)</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/keras_model.md.txt" rel="nofollow"> View page source</a>
       </li>
@@ -89,8 +89,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="dockerkeras">
-<h1>Docker環境におけるkerasを用いたモデル構築<a class="headerlink" href="#dockerkeras" title="この見出しへのパーマリンク"></a></h1>
+  <section id="keras-2-62-docker">
+<h1>keras-2.6を用いた2クラス部類 (docker)<a class="headerlink" href="#keras-2-62-docker" title="この見出しへのパーマリンク"></a></h1>
 <p>tensorflow.kerasが使えるdocker環境を作り、データセットを使って船舶識別を行うモデル作成まで行います。</p>
 <p>ご自身でモデル構築ができる人は飛ばしてください。</p>
 <section id="id1">

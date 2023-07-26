@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>openvino21.2.185を用いてdocker上でkerasモデルを推定 &mdash; jaxaHackathon None ドキュメント</title>
+  <title>openvino22.3.1を用いてローカルでyoloV7モデルを推定 &mdash; jaxaHackathon None ドキュメント</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -20,7 +20,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="索引" href="genindex.html" />
     <link rel="search" title="検索" href="search.html" />
-    <link rel="prev" title="openvino21.2.185を用いてdocker上でkerasモデルを推定" href="keras_vino21.html" /> 
+    <link rel="next" title="おわりに" href="conclusion.html" />
+    <link rel="prev" title="openvino21.2.185 を用いてdocker上でkerasモデルを推定" href="keras_vino21.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,9 +47,9 @@
 <li class="toctree-l1"><a class="reference internal" href="intro.html">はじめに</a></li>
 <li class="toctree-l1"><a class="reference internal" href="making_model.html">モデル作成</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="inference.html">VPUを使った推定</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="inference.html#vpu2">VPUを用いた2種類の推論方法</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="keras_vino21.html">openvino21.2.185を用いてdocker上でkerasモデルを推定</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">openvino21.2.185を用いてdocker上でkerasモデルを推定</a><ul>
+<li class="toctree-l2 current"><a class="reference internal" href="inference.html#openvino">openvinoを使った推論</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="keras_vino21.html">openvino21.2.185 を用いてdocker上でkerasモデルを推定</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">openvino22.3.1を用いてローカルでyoloV7モデルを推定</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#construct-environment-workstation">Construct Environment (Workstation)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#run-of-sample-code">Run of Sample Code</a></li>
 </ul>
@@ -57,6 +58,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="conclusion.html">おわりに</a></li>
 </ul>
 
         </div>
@@ -74,7 +76,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="inference.html">VPUを使った推定</a></li>
-      <li class="breadcrumb-item active">openvino21.2.185を用いてdocker上でkerasモデルを推定</li>
+      <li class="breadcrumb-item active">openvino22.3.1を用いてローカルでyoloV7モデルを推定</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/pytorch_vino22.md.txt" rel="nofollow"> View page source</a>
       </li>
@@ -84,8 +86,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="openvino21-2-185dockerkeras">
-<h1>openvino21.2.185を用いてdocker上でkerasモデルを推定<a class="headerlink" href="#openvino21-2-185dockerkeras" title="この見出しへのパーマリンク"></a></h1>
+  <section id="openvino22-3-1yolov7">
+<h1>openvino22.3.1を用いてローカルでyoloV7モデルを推定<a class="headerlink" href="#openvino22-3-1yolov7" title="この見出しへのパーマリンク"></a></h1>
 <p>先ほど作った環境上で自身が作ったプログラムをCPU・VPUで実行する。</p>
 <section id="construct-environment-workstation">
 <h2>Construct Environment (Workstation)<a class="headerlink" href="#construct-environment-workstation" title="この見出しへのパーマリンク"></a></h2>
@@ -215,7 +217,8 @@ $<span class="w"> </span>omz_converter<span class="w"> </span>--name<span class=
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="keras_vino21.html" class="btn btn-neutral float-left" title="openvino21.2.185を用いてdocker上でkerasモデルを推定" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="keras_vino21.html" class="btn btn-neutral float-left" title="openvino21.2.185 を用いてdocker上でkerasモデルを推定" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="conclusion.html" class="btn btn-neutral float-right" title="おわりに" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

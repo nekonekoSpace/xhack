@@ -1,4 +1,4 @@
-# openvino21.2.185を用いてdocker上でkerasモデルを推定
+# openvino22.3.1を用いてローカルでyoloV7モデルを推定
 先ほど作った環境上で自身が作ったプログラムをCPU・VPUで実行する。
 
 

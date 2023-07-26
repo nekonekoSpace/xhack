@@ -1,11 +1,11 @@
 
-# openvino21.2を用いてdocker上でkerasモデルを推定
+# openvino21.2.185 を用いてdocker上でkerasモデルを推定
 先ほど作った環境上で自身が作ったプログラムをCPU・VPUで実行する。
 流れとしては`pb`形式を`IR`形式に変換し、IR形式のモデルを用いて推論を行う。
 
 ##  docker環境の構築
 
-ご自身が作られた`pb`形式モデルをOpenvinoで利用可能なIR形式に変換するための環境を構築します。
+ご自身が作られた`pb`形式モデルをOpenvinoで利用可能なIR形式に変換するための環境を構築する。
 
 
 ### 前提環境
@@ -127,7 +127,7 @@
 ### pbモデルをIRモデルに変換する
 
 
-`./workspace/model/pb`に作った`model.pb`を入れる
+`./workspace/model/pb`に作った`cnn-model.pb`を入れる
 その後以下のコマンドを実行してpbのモデルをIR形式に変換する
 
 ```bash
@@ -196,18 +196,18 @@ It's been a while, check for a new version of Intel(R) Distribution of OpenVINO(
     │   │   └── y_test.npy
     │   ├── hardware.py
     │   └── run.py
-    ├── install.sh
     └── model
         ├── IR
-        │   ├── model.bin
-        │   ├── model.mapping
-        │   └── model.xml
+        │   ├── cnn-model.bin
+        │   ├── cnn-model.mapping
+        │   └── cnn-model.xml
         └── pb
-            └── model.pb
+            └── cnn-model.pb
 
-新たにinferenceディレクトリを追加する。
+新たに`inference`ディレクトリを追加する。
 - `data` 推論を行うデータを格納するディレクトリ
-- `run.py`　実行のためのpythonファイル　
+    `x_test.npy`と`y_test.npy`はkerasモデルを作成した際に生成されたデータ
+- `run.py`　推論実行のためのpythonファイル　
 
     ```python
     from sklearn.metrics import classification_report,accuracy_score

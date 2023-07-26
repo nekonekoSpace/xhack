@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ローカル環境におけるyoloV7のモデル構築 &mdash; jaxaHackathon None ドキュメント</title>
+  <title>yoloV7を用いた船舶検知 (local) &mdash; jaxaHackathon None ドキュメント</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -21,7 +21,7 @@
     <link rel="index" title="索引" href="genindex.html" />
     <link rel="search" title="検索" href="search.html" />
     <link rel="next" title="VPUを使った推定" href="inference.html" />
-    <link rel="prev" title="Docker環境におけるkerasを用いたモデル構築" href="keras_model.html" /> 
+    <link rel="prev" title="keras-2.6を用いた2クラス部類 (docker)" href="keras_model.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -47,8 +47,8 @@
 <li class="toctree-l1"><a class="reference internal" href="intro.html">はじめに</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="making_model.html">モデル作成</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="making_model.html#id2">2種類の構築方法</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="keras_model.html">Docker環境におけるkerasを用いたモデル構築</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">ローカル環境におけるyoloV7のモデル構築</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keras_model.html">keras-2.6を用いた2クラス部類 (docker)</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">yoloV7を用いた船舶検知 (local)</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#install-torch">Install Torch</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#install-yolov7">Install YOLOv7</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#training-on-yolov7">Training on YOLOv7</a></li>
@@ -77,7 +77,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="making_model.html">モデル作成</a></li>
-      <li class="breadcrumb-item active">ローカル環境におけるyoloV7のモデル構築</li>
+      <li class="breadcrumb-item active">yoloV7を用いた船舶検知 (local)</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/pytorch_model.md.txt" rel="nofollow"> View page source</a>
       </li>
@@ -87,8 +87,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="yolov7">
-<h1>ローカル環境におけるyoloV7のモデル構築<a class="headerlink" href="#yolov7" title="この見出しへのパーマリンク"></a></h1>
+  <section id="yolov7-local">
+<h1>yoloV7を用いた船舶検知 (local)<a class="headerlink" href="#yolov7-local" title="この見出しへのパーマリンク"></a></h1>
 <p>YOLO v7-tinyをNCS2で動作させたい。ただし、YOLO v7のKeras版がないので、Torch版で進めていく。
 最終的にProtoBufferやONNXに変換できればMOでIR形式に変換できるのでOK。</p>
 <p>以下を使っていく。
@@ -152,7 +152,7 @@ Model Summary: 208 layers, 6007596 parameters, 0 gradients, 13.0 GFLOPS
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="keras_model.html" class="btn btn-neutral float-left" title="Docker環境におけるkerasを用いたモデル構築" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="keras_model.html" class="btn btn-neutral float-left" title="keras-2.6を用いた2クラス部類 (docker)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="inference.html" class="btn btn-neutral float-right" title="VPUを使った推定" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

@@ -18,6 +18,7 @@ xxxHackathon
    ./intro
    ./making_model
    ./inference
+   ./conclusion
 
 
 

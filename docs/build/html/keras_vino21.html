@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>openvino21.2を用いてdocker上でkerasモデルを推定 &mdash; jaxaHackathon None ドキュメント</title>
+  <title>openvino21.2.185 を用いてdocker上でkerasモデルを推定 &mdash; jaxaHackathon None ドキュメント</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -48,7 +48,7 @@
 <li class="toctree-l1"><a class="reference internal" href="making_model.html">モデル作成</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="inference.html">VPUを使った推定</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="inference.html#openvino">openvinoを使った推論</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">openvino21.2を用いてdocker上でkerasモデルを推定</a><ul>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">openvino21.2.185 を用いてdocker上でkerasモデルを推定</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#docker">docker環境の構築</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#id5">推論</a></li>
 </ul>
@@ -58,6 +58,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="conclusion.html">おわりに</a></li>
 </ul>
 
         </div>
@@ -75,7 +76,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="inference.html">VPUを使った推定</a></li>
-      <li class="breadcrumb-item active">openvino21.2を用いてdocker上でkerasモデルを推定</li>
+      <li class="breadcrumb-item active">openvino21.2.185 を用いてdocker上でkerasモデルを推定</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/keras_vino21.md.txt" rel="nofollow"> View page source</a>
       </li>
@@ -85,13 +86,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="openvino21-2dockerkeras">
-<h1>openvino21.2を用いてdocker上でkerasモデルを推定<a class="headerlink" href="#openvino21-2dockerkeras" title="この見出しへのパーマリンク"></a></h1>
+  <section id="openvino21-2-185-dockerkeras">
+<h1>openvino21.2.185 を用いてdocker上でkerasモデルを推定<a class="headerlink" href="#openvino21-2-185-dockerkeras" title="この見出しへのパーマリンク"></a></h1>
 <p>先ほど作った環境上で自身が作ったプログラムをCPU・VPUで実行する。
 流れとしては<code class="docutils literal notranslate"><span class="pre">pb</span></code>形式を<code class="docutils literal notranslate"><span class="pre">IR</span></code>形式に変換し、IR形式のモデルを用いて推論を行う。</p>
 <section id="docker">
 <h2>docker環境の構築<a class="headerlink" href="#docker" title="この見出しへのパーマリンク"></a></h2>
-<p>ご自身が作られた<code class="docutils literal notranslate"><span class="pre">pb</span></code>形式モデルをOpenvinoで利用可能なIR形式に変換するための環境を構築します。</p>
+<p>ご自身が作られた<code class="docutils literal notranslate"><span class="pre">pb</span></code>形式モデルをOpenvinoで利用可能なIR形式に変換するための環境を構築する。</p>
 <section id="id1">
 <h3>前提環境<a class="headerlink" href="#id1" title="この見出しへのパーマリンク"></a></h3>
 <ul class="simple">
@@ -204,7 +205,7 @@ root@32cbe7171e82:/#<span class="w"> </span>
 </section>
 <section id="pbir">
 <h3>pbモデルをIRモデルに変換する<a class="headerlink" href="#pbir" title="この見出しへのパーマリンク"></a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">./workspace/model/pb</span></code>に作った<code class="docutils literal notranslate"><span class="pre">model.pb</span></code>を入れる
+<p><code class="docutils literal notranslate"><span class="pre">./workspace/model/pb</span></code>に作った<code class="docutils literal notranslate"><span class="pre">cnn-model.pb</span></code>を入れる
 その後以下のコマンドを実行してpbのモデルをIR形式に変換する</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ cd  /opt/intel/openvino_2021/deployment_tools/model_optimizer/
 $ python3 mo.py --input_model &quot;/workspace/model/pb/model.pb&quot; --output_dir &quot;/workspace/model/IR&quot;  --input_shape [1,80,80,3]
@@ -269,20 +270,20 @@ It&#39;s been a while, check for a new version of Intel(R) Distribution of OpenV
 │   │   └── y_test.npy
 │   ├── hardware.py
 │   └── run.py
-├── install.sh
 └── model
     ├── IR
-    │   ├── model.bin
-    │   ├── model.mapping
-    │   └── model.xml
+    │   ├── cnn-model.bin
+    │   ├── cnn-model.mapping
+    │   └── cnn-model.xml
     └── pb
-        └── model.pb
+        └── cnn-model.pb
 </pre></div>
 </div>
-<p>新たにinferenceディレクトリを追加する。</p>
+<p>新たに<code class="docutils literal notranslate"><span class="pre">inference</span></code>ディレクトリを追加する。</p>
 <ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code> 推論を行うデータを格納するディレクトリ</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">run.py</span></code>　実行のためのpythonファイル</p>
+<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code> 推論を行うデータを格納するディレクトリ
+<code class="docutils literal notranslate"><span class="pre">x_test.npy</span></code>と<code class="docutils literal notranslate"><span class="pre">y_test.npy</span></code>はkerasモデルを作成した際に生成されたデータ</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run.py</span></code>　推論実行のためのpythonファイル</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">classification_report</span><span class="p">,</span><span class="n">accuracy_score</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">openvino.inference_engine</span> <span class="kn">import</span> <span class="n">IECore</span>
