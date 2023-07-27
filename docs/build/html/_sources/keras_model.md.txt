@@ -114,15 +114,24 @@ $ docker run --rm --gpus all nvidia/cuda:11.0.3-base nvidia-smi
 
 ## docker 環境の構築
 
-    ./
-    ├── workspace
-    │   ├── 
-    │   │   ├── x_test.npy
-    │   │   └── y_test.npy
-    │   ├── 
-    │   └── 
-    ├── Docker
-    └── docker-compose.yml
+    .
+    ├── docker-compose.yml
+    ├── Dockerfile
+    └── workspace
+        ├── keras
+        │   └── cnn-model.h5
+        ├── make_dataset.py
+        ├── model.py
+        ├── out
+        │   ├── x_test.npy
+        │   ├── x_train.npy
+        │   ├── x_val.npy
+        │   ├── y_test.npy
+        │   ├── y_train.npy
+        │   └── y_val.npy
+        ├── pb
+        │   └── cnn-model.pb
+        └── shipsnet.json
 
 - docker-compose.yml
     ```Docker
@@ -160,7 +169,8 @@ $ docker run --rm --gpus all nvidia/cuda:11.0.3-base nvidia-smi
 
 今回はkaggleで利用されているデータセットを用いて学習を行う。
 
-https://www.kaggle.com/datasets/rhammell/ships-in-satellite-imager
+ここからダウンロード([kaggleデータセット](https://www.kaggle.com/datasets/rhammell/ships-in-satellite-imager))
+
 
 このデータセットは80 $\times$ 80ピクセルの4000枚のRGB画像が含まれており、それらは船か船以外かのラベルを持っている。
 詳しくはコンテストページを参照していただきたい。

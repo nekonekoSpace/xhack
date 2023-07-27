@@ -20,7 +20,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="索引" href="genindex.html" />
     <link rel="search" title="検索" href="search.html" />
-    <link rel="next" title="ローカル環境におけるyoloV7のモデル構築" href="pytorch_model.html" />
+    <link rel="next" title="yoloV7を用いた船舶検知 (local)" href="pytorch_model.html" />
     <link rel="prev" title="モデル作成" href="making_model.html" /> 
 </head>
 
@@ -56,12 +56,13 @@
 <li class="toctree-l4"><a class="reference internal" href="#id4">モデルの構築</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="pytorch_model.html">ローカル環境におけるyoloV7のモデル構築</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pytorch_model.html">yoloV7を用いた船舶検知 (local)</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="inference.html">VPUを使った推定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conclusion.html">おわりに</a></li>
 </ul>
 
         </div>
@@ -202,15 +203,24 @@ Architecture:   7.0
 </section>
 <section id="docker">
 <h2>docker 環境の構築<a class="headerlink" href="#docker" title="この見出しへのパーマリンク"></a></h2>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>./
-├── workspace
-│   ├── 
-│   │   ├── x_test.npy
-│   │   └── y_test.npy
-│   ├── 
-│   └── 
-├── Docker
-└── docker-compose.yml
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>.
+├── docker-compose.yml
+├── Dockerfile
+└── workspace
+    ├── keras
+    │   └── cnn-model.h5
+    ├── make_dataset.py
+    ├── model.py
+    ├── out
+    │   ├── x_test.npy
+    │   ├── x_train.npy
+    │   ├── x_val.npy
+    │   ├── y_test.npy
+    │   ├── y_train.npy
+    │   └── y_val.npy
+    ├── pb
+    │   └── cnn-model.pb
+    └── shipsnet.json
 </pre></div>
 </div>
 <ul>
@@ -251,7 +261,7 @@ tensorflow_keras:
 <section id="id3">
 <h2>データセットの取得<a class="headerlink" href="#id3" title="この見出しへのパーマリンク"></a></h2>
 <p>今回はkaggleで利用されているデータセットを用いて学習を行う。</p>
-<p>https://www.kaggle.com/datasets/rhammell/ships-in-satellite-imager</p>
+<p>ここからダウンロード(<a class="reference external" href="https://www.kaggle.com/datasets/rhammell/ships-in-satellite-imager">kaggleデータセット</a>)</p>
 <p>このデータセットは80 $\times$ 80ピクセルの4000枚のRGB画像が含まれており、それらは船か船以外かのラベルを持っている。
 詳しくはコンテストページを参照していただきたい。</p>
 <p>データセットをダウンロードをダウンロードすると<code class="docutils literal notranslate"><span class="pre">/shipsnet/shipsnet</span></code>に画像データが存在しており、<code class="docutils literal notranslate"><span class="pre">./shipsnet.json</span></code>に数値データが入っているので、使いやすいようにnpyデータとラベルのセットを作成する。</p>
@@ -430,7 +440,7 @@ tensorflow_keras:
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="making_model.html" class="btn btn-neutral float-left" title="モデル作成" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pytorch_model.html" class="btn btn-neutral float-right" title="ローカル環境におけるyoloV7のモデル構築" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pytorch_model.html" class="btn btn-neutral float-right" title="yoloV7を用いた船舶検知 (local)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
