@@ -114,6 +114,7 @@ $ docker run --rm --gpus all nvidia/cuda:11.0.3-base nvidia-smi
 
 ## docker 環境の構築
 
+### ディレクトリ構造
     .
     ├── docker-compose.yml
     ├── Dockerfile

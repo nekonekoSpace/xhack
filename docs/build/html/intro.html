@@ -52,6 +52,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="making_model.html">モデル作成</a></li>
 <li class="toctree-l1"><a class="reference internal" href="inference.html">VPUを使った推定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conclusion.html">おわりに</a></li>
 </ul>
 
         </div>
@@ -86,7 +87,18 @@
 </section>
 <section id="id3">
 <h2>説明2<a class="headerlink" href="#id3" title="この見出しへのパーマリンク"></a></h2>
-<p>hugahuga</p>
+<p>このチュートリアルでは、モデルの作成からVPUでの推論までを扱うが、その方法にはいくつかやり方がある。
+例えばネットワークを構築する際の深層学習フレームワークには、<code class="docutils literal notranslate"><span class="pre">TensorFlow</span></code> や <code class="docutils literal notranslate"><span class="pre">PyTorch</span></code> 、<code class="docutils literal notranslate"><span class="pre">Keras</span></code> 、<code class="docutils literal notranslate"><span class="pre">Caffe</span></code> などが存在し、
+それを実行する環境もローカル上で動かすのか、dockerなどの仮想環境で動かすのかで違ってくる。
+さらには、VPUを利用する際に利用するopenvinoと呼ばれるライブラリーにも <code class="docutils literal notranslate"><span class="pre">21.x</span></code> <code class="docutils literal notranslate"><span class="pre">22.x</span></code> <code class="docutils literal notranslate"><span class="pre">23.x</span></code>　などのバージョンがあり、その環境の構築方法や
+使い方も少しずつことなる。</p>
+<p>そこで今回下の図のようにモデル作成と推論に分け、それぞれ2つのチュートリアルを用意した。
+モデルの構築ではkerasを使ってDocker環境で単純なCNNモデルを作成するものと、ローカル環境でpytorchを使ってyoloV7モデルを構築する
+方法の2種類を用意した。
+また、推論ではDocker環境openvino21.2を使って推論を行う方法とローカル環境でopenvino22.3を使って推論する方法の2つがある。</p>
+<p>自身でモデルの構築から行える方はIR変換&amp;推論から行っていただきたい。
+また、PyTorchをDockerで使いたいなどあれば適宜読み替えて、開発環境を整えて欲しい。</p>
+<img alt="_images/intro.png" src="_images/intro.png" />
 </section>
 <section id="id4">
 <h2>注意<a class="headerlink" href="#id4" title="この見出しへのパーマリンク"></a></h2>

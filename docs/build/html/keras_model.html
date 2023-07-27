@@ -52,8 +52,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#id2">出来上がる環境</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#nvidia-container-toolkit">nvidia-container-toolkitの導入</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#docker">docker 環境の構築</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id3">データセットの取得</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id4">モデルの構築</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">データセットの取得</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5">モデルの構築</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pytorch_model.html">yoloV7を用いた船舶検知 (local)</a></li>
@@ -203,6 +203,8 @@ Architecture:   7.0
 </section>
 <section id="docker">
 <h2>docker 環境の構築<a class="headerlink" href="#docker" title="この見出しへのパーマリンク"></a></h2>
+<section id="id3">
+<h3>ディレクトリ構造<a class="headerlink" href="#id3" title="この見出しへのパーマリンク"></a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>.
 ├── docker-compose.yml
 ├── Dockerfile
@@ -258,8 +260,9 @@ tensorflow_keras:
 </li>
 </ul>
 </section>
-<section id="id3">
-<h2>データセットの取得<a class="headerlink" href="#id3" title="この見出しへのパーマリンク"></a></h2>
+</section>
+<section id="id4">
+<h2>データセットの取得<a class="headerlink" href="#id4" title="この見出しへのパーマリンク"></a></h2>
 <p>今回はkaggleで利用されているデータセットを用いて学習を行う。</p>
 <p>ここからダウンロード(<a class="reference external" href="https://www.kaggle.com/datasets/rhammell/ships-in-satellite-imager">kaggleデータセット</a>)</p>
 <p>このデータセットは80 $\times$ 80ピクセルの4000枚のRGB画像が含まれており、それらは船か船以外かのラベルを持っている。
@@ -305,8 +308,8 @@ tensorflow_keras:
 </li>
 </ul>
 </section>
-<section id="id4">
-<h2>モデルの構築<a class="headerlink" href="#id4" title="この見出しへのパーマリンク"></a></h2>
+<section id="id5">
+<h2>モデルの構築<a class="headerlink" href="#id5" title="この見出しへのパーマリンク"></a></h2>
 <p>今回のモデルでは単純な3層CNNを作成する。外観は以下のようになる。
 <img alt="cnn-fig" src="_images/cnn-fig.png" /></p>
 <p>以下コード</p>
